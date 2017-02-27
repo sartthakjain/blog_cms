@@ -3,10 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/opt/lampp/htdocs/blog/authentication.php</file>
+            <file>file:/opt/lampp/htdocs/blog/dashboard.php</file>
             <file>file:/opt/lampp/htdocs/blog/class-user.php</file>
+            <file>file:/opt/lampp/htdocs/blog/login.php</file>
+            <file>file:/opt/lampp/htdocs/blog/post_blog.php</file>
             <file>file:/opt/lampp/htdocs/blog/index.php</file>
-            <file>file:/opt/lampp/htdocs/blog/class-db_connection.php</file>
+            <file>file:/opt/lampp/htdocs/blog/class-post.php</file>
         </group>
     </open-files>
 </project-private>

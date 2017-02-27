@@ -30,6 +30,8 @@ else
     else{
         print_r("login successful");
         $_SESSION['loggedIn']=1;
+        $_SESSION['username']=$_POST['username'];
+        $_SESSION['uid'] =$user->get_user_id($_SESSION['username']);
         header("location: dashboard.php");
         
     }
@@ -53,6 +55,6 @@ else
  <br/>
  <input type="submit" value="login"/>
 </form>
- <a href="login.php">LOGIN HERE</a>
+ <a href="index.php">Register here</a>
  </body>
 </html>

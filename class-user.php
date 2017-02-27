@@ -12,7 +12,7 @@ class User
     private $password;
     private $email_id;
     public $connection;
-    
+    private $user_id;
     function __construct() {
         $db_connect= new db_connection('localhost', 'root', '', 'blog_db');
     
@@ -26,8 +26,38 @@ class User
            
     
     }
+    public function get_user_details($uid)
+    {
+        
+         $isconnected =$this->connection;
+        
+        
+        if(!$isconnected)
+            echo 'error in db connection';
+        else
+        {
+            if(isset($uid) && $uid!='')
+            {
+                $sql = "select * from user where  uid = $uid";
+                 $results = mysqli_query($isconnected, $sql);
+                 if(mysqli_num_rows($results)>0)
+                 {
+                     $row=mysqli_fetch_array($results,MYSQLI_ASSOC);
+                     return $row;
+                 }
+            }
+        }
+    }
     
+    public function  set_user_details_to_object($uid)
+    {
+        $row = $this->get_user_details($uid);
+        $this->username = $row['username'];
+        $this->email_id = $row['email'];
+        $this->user_id=$uid;
+    }
     
+
     public function add_user_to_db()
     {
      
@@ -56,11 +86,37 @@ class User
                 ." ')";
        
                 if(mysqli_query($isconnected, $sql))
-                print_r ("inserted successfully");
+                {
+                    print_r ("inserted successfully");
+                    //$this->user_id = $this->get_user_id($this->username);
+                }
             }
         }
         
    }
+   
+   public function get_user_id($username)
+   {
+        $isconnected =$this->connection;
+        
+        
+        if(!$isconnected)
+            echo 'error in db connection';
+        else
+        {
+            if(isset($username) && $username!='')
+            {
+                $sql = "select uid from user where  username = '$username'";
+                 $results = mysqli_query($isconnected, $sql);
+                 if(mysqli_num_rows($results)==1)
+                 {
+                     $row=mysqli_fetch_array($results,MYSQLI_ASSOC);
+                     return $row['uid'];
+                 }
+            }
+        }
+       
+    }
    
    public function is_user_exsist()
    {
@@ -94,6 +150,8 @@ class User
           if($row['password']==$password)
           {
               print_r("authenticated");
+              $this->username = $username;
+              $this->password = $password;
               return true; 
           }
           else
@@ -123,4 +181,39 @@ class User
            unset($this->$key);
        }
    }
+   
+  public function get_all_post($uid)
+  {
+       $isconnected =$this->connection;
+        
+        
+        if(!$isconnected)
+            echo 'error in db connection';
+        else
+        {
+            if(isset($uid) && $uid!='')
+            {
+                $sql = "select * from post where  uid = $uid";
+                 $results = mysqli_query($isconnected, $sql);
+                 if(mysqli_num_rows($results)>0)
+                 {
+                     $row=mysqli_fetch_all($results,MYSQLI_ASSOC);
+                     return $row;
+                 }
+            }
+        }
+  }
+
+  public function chop_user_post($str,$len){
+  if(strlen($str)<$len)
+      return $str;
+  else {
+  $str = substr($str,0,$len);
+  return $str."....Read More";
+  }
 }
+  
+  
+   }
+
+    

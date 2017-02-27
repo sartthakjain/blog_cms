@@ -29,6 +29,7 @@ else
     $user = new User;
     $user->create_user($_POST['username'],$_POST['password'],$_POST['email']);
     $user->add_user_to_db();
+ 
     $user->reset_user_object();
     
    }
