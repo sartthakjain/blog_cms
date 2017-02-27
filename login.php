@@ -22,7 +22,7 @@ else
     if(!isset($_POST['password'])||$_POST['password']=='')echo "password field required";
     else{ 
        
-    $user = new User;
+    $user = new User($db_handler);
     
     if(!$user->check_user_password($_POST['username'], $_POST['password'])){
         

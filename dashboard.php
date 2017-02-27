@@ -8,7 +8,7 @@
 include('class-db_connection.php');
 include('class-user.php');
 session_start();
-$user = new User();
+$user = new User($db_handler);
 $user->check_loggedIn();
 $user_data = $user->get_user_details($_SESSION['uid']);
 $user_post_data = $user->get_all_post($_SESSION['uid']);
@@ -42,6 +42,8 @@ else{
 
     header("location: $gotourl");
 }
+
+
 
 
 ?>
@@ -163,7 +165,8 @@ else{
                     <p class="post-meta">Posted by <a href="#">   anonymous   </a> on  <?php echo $value['timestamp'];?></p>
                     <form action="post_blog.php" method="get">
                         <input type="text" name='postid' value="<?php echo $value['id']; ?>" hidden="true" />
-                        <input type="submit" value="edit"/>
+                        <input type="submit" name="edit" value="edit"/>
+                        <input type="submit" name="delete" value="delete"/>
                     </form>
                 </div>
                 <?php endforeach; 

@@ -6,6 +6,7 @@
  * and open the template in the editor.
  */
 
+
 class db_connection
 {
     private $host;
@@ -14,12 +15,13 @@ class db_connection
     private $database;
     public $connection;
     
-    function __construct($host,$username,$password,$database) {
-        $this->host = $host;
-        $this->username = $username;
-        $this->password = $password;
-        $this->database = $database;
-        $this->connection = $this->connect_database();
+    function __construct() {
+        $database = include('config.php');
+        $this->host = $database['host'];
+        $this->username = $database['username'];
+        $this->password = $database['password'];
+        $this->database = $database['db_name'];
+       
         
     }
         
@@ -27,14 +29,15 @@ class db_connection
     {
         
         $db = mysqli_connect($this->host, $this->username, $this->password, $this->database);
-                return $db;
+                $this->connection=$db;
     }
        
     }
     
 
 
-  
+$db_handler = new db_connection();
+$db_handler->connect_database();
 
 
 ?>
