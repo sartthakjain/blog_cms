@@ -23,14 +23,14 @@ else
     
 
     
- $post =new Post($db_handler);
+ $_POST =new Post($db_handler);
 if(isset($_GET['delete']))
 {
-$post->delete_post($_GET['postid']);
+$_POST->delete_post($_GET['postid']);
 header("location: dashboard.php");
 }
 
- $post_data = $post->get_post_details_by_postid($_GET['postid']);
+ $post_data = $_POST->get_post_details_by_postid($_GET['postid']);
 }
 
 
@@ -45,19 +45,19 @@ else{
     else
      if(!isset($_POST['content'])||$_POST['content']=='')print_r ("content missing");
     else{
-            $post = new Post($db_handler);
-            $post->set_post_title($_POST['title']);
-            $post->set_post_content($_POST['content']);
-            $post->set_post_user($_SESSION['uid']);
+            $_POST = new Post($db_handler);
+            $_POST->set_post_title($_POST['title']);
+            $_POST->set_post_content($_POST['content']);
+            $_POST->set_post_user($_SESSION['uid']);
             if(!isset($_POST['postid'])||$_POST['postid']=='')
             {
                 print_r($_POST['postid']);
-            $post->upload_post(); 
+            $_POST->upload_post(); 
             }
             else
             {
                 
-                $post->update_post($_POST['postid']);
+                $_POST->update_post($_POST['postid']);
             }
              header("location: dashboard.php");
         }
@@ -70,7 +70,11 @@ else{
 <html>
     <head>
   <script src="//cloud.tinymce.com/stable/tinymce.min.js"></script>
-  <script>tinymce.init({ selector:'textarea' });</script>
+  <script>
+            tinymce.init({    selector:'textarea',
+                            plugins: 'codesample',
+                            toolbar: 'codesample'});
+</script>
 </head>
     <body>
         <h1>AWESOME STUFF ARE WRITTEN HERE :)</h1>

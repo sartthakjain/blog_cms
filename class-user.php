@@ -13,8 +13,8 @@ class User {
     private $email_id;
     public $connection;
     private $user_id;
-
-    function __construct($db_handler) {
+    private $user_role;
+                function __construct($db_handler) {
         $this->connection = $db_handler->connection;
     }
 
@@ -77,6 +77,7 @@ class User {
         $row = $this->get_user_details($uid);
         $this->username = $row['username'];
         $this->email_id = $row['email'];
+        $this->user_role = $row['role'];
         $this->user_id = $uid;
     }
 
@@ -93,6 +94,25 @@ class User {
                 if (mysqli_num_rows($results) == 1) {
                     $row = mysqli_fetch_array($results, MYSQLI_ASSOC);
                     return $row['uid'];
+                }
+            }
+        }
+    }
+    
+    
+      public function get_user_role($uid) {
+        $isconnected = $this->connection;
+
+
+        if (!$isconnected)
+            echo 'error in db connection';
+        else {
+            if (isset($uid) && $uid != '') {
+                $sql = "select role from user where  uid = '$uid'";
+                $results = mysqli_query($isconnected, $sql);
+                if (mysqli_num_rows($results) == 1) {
+                    $row = mysqli_fetch_array($results, MYSQLI_ASSOC);
+                    return $row['role'];
                 }
             }
         }
@@ -138,7 +158,7 @@ class User {
 
     public function check_loggedIn() {
         if (!isset($_SESSION['loggedIn']))
-            header("location: login.php");
+            header("location: index.php");
     }
 
     public function reset_user_object() {
@@ -171,6 +191,51 @@ class User {
         else {
             $str = substr($str, 0, $len);
             return $str . "....Read More";
+        }
+    }
+    
+    
+    public function login_validation($post)
+    {
+        
+          if (!isset($post['username']) || $post['username'] == '')
+        $msg = "username field required";
+    else
+    if (!isset($post['password']) || $post['password'] == '')
+        $msg = "password field required";
+    else {
+        if (!$this->check_user_password($post['username'], $post['password'])) {
+            
+        } else {
+            $_SESSION['loggedIn'] = 1;
+            $_SESSION['username'] = $post['username'];
+            $_SESSION['uid'] = $this->get_user_id($_SESSION['username']);
+            $_SESSION['user_role'] = $this->get_user_role($_SESSION['uid']);
+            header("location: dashboard.php");
+        }
+        $this->reset_user_object();
+    }
+        return $msg;
+    }
+    
+    
+     public function get_media($uid,$used_as)
+    {
+        $isconnected = $this->connection;
+        
+        if(!$isconnected)
+        {
+            echo "error in db_connection";
+        }else{
+            $sql ='select * from media where uid ='.$uid.' and used_as like "'.$used_as.'"';
+     
+            $results = mysqli_query($isconnected, $sql);
+                if (mysqli_num_rows($results) ==1) {
+                    $row = mysqli_fetch_all($results, MYSQLI_ASSOC);
+                    return $row;
+                    
+                }
+               
         }
     }
 

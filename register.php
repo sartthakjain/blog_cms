@@ -4,21 +4,88 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-include('class-db_connection.php');
-include('class-user.php');
-session_start();
+require_once('class-db_connection.php');
+require_once('class-user.php');
+require_once('class-media.php');
 
-print_r($_POST);
-if (empty($_POST)) {
+     print_r($_FILES);
+
+
+if (!$_POST) {
     
 } else {
     //BASIC VALIDATIONS
-
-   $user = new User($db_handler);
-  $validation_msg = $user->login_validation($_POST);
-  print_r($validation_msg);
-  
-  
+    if (!isset($_POST['username']) || $_POST['username'] == '')
+        echo "username field required";
+    else
+    if (!preg_match("/^[a-zA-Z ]*$/", $_POST['username']))
+        echo "not a valid username";
+    else
+    if (!isset($_POST['password']) || $_POST['password'] == '')
+        echo "password field required";
+    else
+    if (!isset($_POST['email']) || $_POST['email'] == '')
+        echo "email field required";
+    else
+    if (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) )
+        echo "not a valid email";
+    else {
+   
+        $user = new User($db_handler);
+        $user->create_user($_POST['username'], $_POST['password'], $_POST['email']);
+        $user->add_user_to_db();
+       
+      
+        
+        if(isset($_FILES['profile_pic']))
+        {
+            $target_dir = "uploads/";
+            $target_file = $target_dir.basename($_FILES['profile_pic']['name']);
+            $uploadOk = 1;
+            $check = getimagesize($_FILES['profile_pic']['tmp_name']);
+            if($check!=false)
+            {
+                echo "File is an image.";
+                $uploadOk = 1;
+                
+            }else{
+                echo "File is not an image.";
+                $uploadOk = 0;
+            }
+            if(file_exists($target_file))
+            {
+                echo 'Sorry,file already exsist.';
+                $uploadOk = 0;
+            }
+            
+            if($_FILES['profile_pic']['size']>500000)
+            {
+                echo 'Sorry your file is too large';
+                $uploadOk = 0;
+            }
+               if($uploadOk == 0)
+                   echo 'Sorry there was a problem in uploading the image';
+            else{
+            if(move_uploaded_file($_FILES['profile_pic']['tmp_name'], $target_file))
+            {
+                echo "the file ".basename($_FILES['profile_pic']['tmp_name'])." has been uploaded.";
+                
+                $media = new Media($db_handler);
+                $path = $target_file;
+                $name = basename($_FILES['profile_pic']['name']);
+                $type = $_FILES['profile_pic']['type'];
+                $uid = $user->get_user_id($_POST['username']);
+                $media->create_media($path, $name, $type, $uid,'profile_pic');
+                $media->add_media_to_db();
+                 $user->reset_user_object();
+                
+            }
+            echo"working";
+        }
+            
+        }
+        
+    }
 }
 ?>
 
@@ -97,9 +164,9 @@ if (empty($_POST)) {
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                         <div class="site-heading">
-                            <h1>Hi.Who are u?</h1>
+                            <h1>Hi. You look new.</h1>
                             <hr class="small">
-                            <span class="subheading">Login so that I can take you to your awesome stuff.</span>
+                            <span class="subheading">Welcome to the club.Just tell me your details.</span>
                         </div>
                     </div>
                 </div>
@@ -109,16 +176,20 @@ if (empty($_POST)) {
         <!-- Main Content -->
         <div>
             <br/>
-            <form action="" method="POST">
+            <h1>Register</h1>
+            <form action="" method="POST" enctype="multipart/form-data">
                 <input type="text" placeholder="username" name="username"/>
                 <br/>
                 <input type="password" placeholder="password" name="password"/>
                 <br/>
-                <input type="submit" value="login"/>
+                <input type="text" placeholder="email" name="email"/>
+                 <br/>
+                <input type="file" name="profile_pic">
+                <br/>
+                <input type="submit" value="register"/>
             </form>
-            <a href="register.php">Ohhh gosh! you are new.</a>
+            <a href="index.php">LOGIN HERE</a>
             <hr>
-
         </div>
 
         <!-- Footer -->
@@ -174,3 +245,4 @@ if (empty($_POST)) {
     </body>
 
 </html>
+

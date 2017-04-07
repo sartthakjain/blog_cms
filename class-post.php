@@ -28,6 +28,7 @@ class Post {
     }
 
     public function set_post_title($value) {
+      //  $value = htmlspecialchars($value);
         $this->title = $value;
     }
 
@@ -36,6 +37,7 @@ class Post {
     }
 
     public function set_post_content($value) {
+        //$value = htmlspecialchars($value);
         $this->content = $value;
     }
 

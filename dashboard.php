@@ -5,13 +5,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 include('class-db_connection.php');
 include('class-user.php');
+include('class-media.php');
 session_start();
 $user = new User($db_handler);
 $user->check_loggedIn();
 $user_data = $user->get_user_details($_SESSION['uid']);
 $user_post_data = $user->get_all_post($_SESSION['uid']);
+$profile_pic = $user->get_media($_SESSION['uid'],"profile_pic");
 $gotourl = '';
 if(empty($_POST)||!isset($_POST))
 {
@@ -28,15 +31,14 @@ else{
     }
     
     if(isset($_POST['write_blog']))
-    {
-        print_r ("HII");        
+    {     
         $gotourl = 'post_blog.php';
     }
     
     if(isset($_POST['manage']))
     {
-        print_r("lets manage biths");   
-     $gotourl = 'manage-blogs.php';
+ 
+     $gotourl = 'manage_profile.php';
         
     }
 
@@ -127,7 +129,7 @@ else{
 
     <!-- Page Header -->
     <!-- Set your background image for this header on the line below. -->
-    <header class="intro-header" style="background-image: url('img/home-bg.jpg')">
+    <header class="intro-header" style="background-image: url('<?php echo $profile_pic[0]['path']; ?>')">
         <div class="container">
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
@@ -143,7 +145,7 @@ else{
 <form action="" method="POST">
     <input type="submit" name="logout" value="LOGOUT"/>
      <input type="submit" name="write_blog" value="WRITE A BLOG"/>
-    <input type="submit" name="manage" value="MANAGE BLOGS"/>
+    <input type="submit" name="manage" value="MANAGE PROFILE"/>
 </form>
     <!-- Main Content -->
     <div class="container">
